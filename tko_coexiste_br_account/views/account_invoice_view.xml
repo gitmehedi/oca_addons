@@ -1,0 +1,146 @@
+<odoo>
+
+    <!--Account Move-->
+    <record model="ir.ui.view" id="view_move_form_inherit">
+        <field name="name">account.move</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='line_ids']//tree//field[@name='date_maturity']" position="after">
+                <field name="expense_type_id" options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--Account Move Line-->
+    <record model="ir.ui.view" id="view_move_line_form_inherit">
+        <field name="name">account.move.line.form.inherit</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_form"/>
+        <field name="arch" type="xml">
+            <field name="statement_id" position="after">
+                <field name="expense_type_id" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <!--Customer Invoice-->
+    <record id="invoice_form_inherit" model="ir.ui.view">
+        <field name="name">account.invoice.view.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <field name="date_invoice" position="attributes">
+                <attribute name="attrs">{'readonly'  : [('state','!=', 'draft')]}</attribute>
+            </field>
+            <field name="move_id" position="after">
+                <field name="expense_type_id" required="1" options="{'no_create': True}"
+                       domain="[('expense_type','in',['c','b'])]"/>
+            </field>
+            <xpath expr="//notebook[last()]" position="inside">
+                <page string="Payment Info">
+                    <field name="payment_move_line_ids">
+                        <tree create="0">
+                            <field name="date" string="Payment Date"/>
+                            <field name="credit"/>
+                            <field name="debit"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!--Supplier Invoice-->
+
+    <record id="invoice_supplier_form" model="ir.ui.view">
+        <field name="name">account.invoice.view.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <field name="reference" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="reference" position="before">
+                <field name="reference_coexiste"/>
+            </field>
+            <field name="journal_id" position="replace">
+                <field name="journal_id" options="{'no_create': True}" attrs="{'readonly':[('move_name','!=',False)]}"/>
+            </field>
+            <field name="move_id" position="after">
+                <field name="expense_type_id" required="1" options="{'no_create': True}"
+                       domain="[('expense_type','in',['s','b'])]"/>
+            </field>
+        </field>
+    </record>
+
+    <!--Supplier Invoice Tree-->
+
+    <record id="invoice_supplier_tree" model="ir.ui.view">
+        <field name="name">account.invoice.view.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_tree"/>
+        <field name="arch" type="xml">
+            <field name="reference" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="reference" position="before">
+                <field name="reference_coexiste"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="br_account_invoice_form_view_inherit" model="ir.ui.view">
+        <field name="name">account.invoice_form_view</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vendor_number']" position="replace">
+                <field name="vendor_number" attrs="{'invisible': [('issuer','=', '1')]}" required="True"/>
+            </xpath>
+            <xpath expr="//field[@name='date_invoice']" position="replace">
+                <field name="date_invoice" string="Bill Date"
+                       required="True"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="replace"/>
+            <xpath expr="//field[@name='fiscal_position_id']" position="before">
+                <field name="payment_term_id"/>
+            </xpath>
+            <xpath expr="//notebook[last()]" position="inside">
+                <page string="Payment Info">
+                    <button name="update_history" type="object" string="Get History"/>
+                    <field name="payment_move_line_ids">
+                        <tree create="0">
+                            <field name="date" string="Payment Date"/>
+                            <field name="credit"/>
+                            <field name="debit"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="invoice_tko_filter" model="ir.ui.view">
+        <field name="name">account.invoice.view.tko.filter</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <field name="date" position="after">
+                <field name="payment_date" string="payment Date" filter_domain="[('payment_date','&gt;=',self)]"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="invoice_line_filter" model="ir.ui.view">
+        <field name="name">account.invoice.line</field>
+        <field name="model">account.invoice.line</field>
+        <field name="arch" type="xml">
+            <search string="Linhas da fatura">
+                <field name="product_id" string="Produto"/>
+                <field name="account_analytic_id" string="Conta Analytica"/>
+            </search>
+        </field>
+    </record>
+</odoo>
+
