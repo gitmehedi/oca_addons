@@ -11,7 +11,7 @@
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
             <notebook position="inside">
-                <page string="Academic Experiences" groups="base.group_user">
+                <page string="Academic Experiences" groups="hr.group_hr_user">
                     <field name="academic_ids" context="{'default_employee_id': active_id}">
                         <tree string="Academic Experiences">
                             <field name="name" string="Academic Experience"/>
@@ -41,7 +41,7 @@
                         </form>
                     </field>
                 </page>
-                <page string="Professional Experiences" groups="base.group_user">
+                <page string="Professional Experiences" groups="hr.group_hr_user">
                     <field name="experience_ids" context="{'default_employee_id': active_id}">
                         <tree string="Professional Experiences">
                             <field name="name" string="Position"/>
@@ -65,7 +65,7 @@
                         </form>
                     </field>
                 </page>
-                <page string="Certifications" groups="base.group_user">
+                <page string="Certifications" groups="hr.group_hr_user">
                     <field name="certification_ids" context="{'default_employee_id': active_id}">
                         <tree string="Certifications">
                             <field name="name" string="Certification"/>
